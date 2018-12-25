@@ -39,10 +39,10 @@ public class MineSweeper extends JFrame implements ActionListener
     
     private void setWindowProperties () 
     {
-    	setIconImage (Toolkit.getDefaultToolkit().getImage ("MSicon.attribute"));
-    	setSize(450,500);
+    	setIconImage (Toolkit.getDefaultToolkit().getImage (".msicon"));
+    	setSize (450,500);
     	setLayout(new GridLayout (singleDimension, singleDimension));
-    	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    	setDefaultCloseOperation (DISPOSE_ON_CLOSE);
 		setVisible (true);
 		getContentPane().setBackground (Color.lightGray);
 		if (Is_JAR) 
