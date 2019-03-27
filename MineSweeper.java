@@ -1,4 +1,10 @@
-// by Auden Childress
+/** 
+ * @author Auden Childress
+ * @version final
+ * @since May, 2018
+ * Copyright 2018
+ * GeistfulAutomaton@gmail.com
+ */
 
 import java.awt.Color;
 import java.awt.EventQueue;
