@@ -6,6 +6,7 @@
  */
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -34,38 +36,47 @@ public class MineSweeper extends JFrame implements ActionListener
 	diffs d = diffs.medium;
 	private boolean rainbowMode = false;
 	
-    public MineSweeper () 
-    {
-    	setWindowProperties();
-    	setComponentProperties();
-    }
+	@SuppressWarnings("unused")
+	public static void main(String[] args) 
+	{	
+		EventQueue.invokeLater(() -> 
+    		{
+    			MineSweeper ms = new MineSweeper();
+       		 });
+	}
+	
+   	 public MineSweeper () 
+   	 {
+    		setWindowProperties();
+    		setComponentProperties();
+    	}
     
-    /**
-     * Constructs the basic window setting of the GUI.
-     */
-    private void setWindowProperties () 
-    {
-    	try 
+  	/**
+  	* Constructs the basic window setting of the GUI.
+     	*/
+    	private void setWindowProperties () 
     	{
+    		try 
+    		{
 			UIManager.setLookAndFeel ("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} 
-    	catch (Exception any) 
-    	{/*UI not found*/}
-    	ImageIcon icon = new ImageIcon(getClass().getResource("/Icon.png"));
-    	setIconImage(icon.getImage());
-    	setSize(450,500);
-    	setLayout(new GridLayout(singleDimension, singleDimension));
-    	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	    	catch (Exception any) 
+    		{/*UI not found*/}
+    		ImageIcon icon = new ImageIcon(getClass().getResource("/Icon.png"));
+    		setIconImage(icon.getImage());
+    		setSize(450,500);
+    		setLayout(new GridLayout(singleDimension, singleDimension));
+    		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 		getContentPane().setBackground(Color.lightGray);
 		if (Is_JAR) 
 			setSize(getWidth() + 10, getHeight() + 10);
 		setResizable(false);
-    }
+   	 }
     
-    /**
-     * Creates the menu and the subcomponents.
-     */
+    	/**
+     	* Creates the menu and the subcomponents.
+    	*/
 	private void setComponentProperties() 
 	{
 		JMenuBar bar = new JMenuBar();
@@ -325,3 +336,4 @@ public class MineSweeper extends JFrame implements ActionListener
 		@Override public void mouseReleased (MouseEvent arg0) { }
 	}
 }	
+	
