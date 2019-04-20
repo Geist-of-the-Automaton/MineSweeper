@@ -52,7 +52,8 @@ public class MineSweeper extends JFrame implements ActionListener
 		} 
     	catch (Exception any) 
     	{/*UI not found*/}
-    	setIconImage(Toolkit.getDefaultToolkit().getImage(".msicon"));
+    	ImageIcon icon = new ImageIcon(getClass().getResource("/Icon.png"));
+    	setIconImage(icon.getImage());
     	setSize(450,500);
     	setLayout(new GridLayout(singleDimension, singleDimension));
     	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
