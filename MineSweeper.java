@@ -1,13 +1,11 @@
 /** 
  * @author Auden Childress
- * @version final
- * @since May, 2018
+ * @version 2.0
  * Copyright 2018
  * GeistfulAutomaton@gmail.com
  */
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -31,42 +29,54 @@ public class MineSweeper extends JFrame implements ActionListener
 	public static final boolean Is_JAR = false;
 	
 	private static final byte singleDimension = 10;
-	private space board[][] = new space[singleDimension][singleDimension];
-	private byte safeSpaces = 0;
+	private Tile board[][] = new Tile[singleDimension][singleDimension];
+	private byte safeTiles = 0;
 	enum diffs {easy, medium, hard};
 	diffs d = diffs.medium;
 	private boolean rainbowMode = false;
 	
     public MineSweeper () 
     {
-    	setWindowProperties ();
-    	setComponentProperties ();
+    	setWindowProperties();
+    	setComponentProperties();
     }
     
+    /**
+     * Constructs the basic window setting of the GUI.
+     */
     private void setWindowProperties () 
     {
-    	setIconImage (Toolkit.getDefaultToolkit().getImage (".msicon"));
-    	setSize (450,500);
-    	setLayout(new GridLayout (singleDimension, singleDimension));
-    	setDefaultCloseOperation (DISPOSE_ON_CLOSE);
-		setVisible (true);
-		getContentPane().setBackground (Color.lightGray);
+    	try 
+    	{
+			UIManager.setLookAndFeel ("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		} 
+    	catch (Exception any) 
+    	{/*UI not found*/}
+    	setIconImage(Toolkit.getDefaultToolkit().getImage(".msicon"));
+    	setSize(450,500);
+    	setLayout(new GridLayout(singleDimension, singleDimension));
+    	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setVisible(true);
+		getContentPane().setBackground(Color.lightGray);
 		if (Is_JAR) 
 			setSize(getWidth() + 10, getHeight() + 10);
-		setResizable (false);
+		setResizable(false);
     }
     
-	private void setComponentProperties () 
+    /**
+     * Creates the menu and the subcomponents.
+     */
+	private void setComponentProperties() 
 	{
-		JMenuBar bar = new JMenuBar ();
-		JMenu downMenu = new JMenu ("Options");
+		JMenuBar bar = new JMenuBar();
+		JMenu downMenu = new JMenu("Options");
 		bar.add(downMenu);
 		String downMenuItems[] = {"Reset", "View Board", "Difficulty", "About", "Exit"};
 		for (String name : downMenuItems) 
 		{
 			if (name.equals("Difficulty")) 
 			{
-				JMenu it = new JMenu (name);
+				JMenu it = new JMenu(name);
 				String diffs[]= {"Over Easy", "Scrambled", "Hard Boiled"};
 				for (String d : diffs) 
 				{
@@ -78,45 +88,57 @@ public class MineSweeper extends JFrame implements ActionListener
 			}
 			else
 			{
-				JMenuItem it = new JMenuItem (name);
-				it.addActionListener (this);
-				if (name.equals ("Exit")) 
-					downMenu.addSeparator ();
-				downMenu.add (it);
+				JMenuItem it = new JMenuItem(name);
+				it.addActionListener(this);
+				if (name.equals("Exit")) 
+					downMenu.addSeparator();
+				downMenu.add(it);
 			}
 		}
-		bar.setVisible (true);
-		setJMenuBar (bar);
-		boardSetup ();
+		bar.setVisible(true);
+		setJMenuBar(bar);
+		boardSetup();
 	}
 	
+	/**
+	 * Creates the Tiles (JButtons) for the game board.
+	 */
 	private void boardSetup () 
 	{
 		setTitle (" Mine Sweeper - Medium");
 		for (byte y = 0; y < singleDimension; y++)
 			for (byte x = 0; x < singleDimension; x++) 
 			{
-				board[y][x] = new space();
+				board[y][x] = new Tile();
 				add(board[y][x]);
 			}
 		getContentPane().doLayout();
 		reset ();
 	}
 	
+	/**
+	 * Prepares the game board for the next round.
+	 */
 	private void reset () 
 	{
 		resetBoard ();
 		countSurrounding ();
 	}
 	
+	/**
+	 * Resets each tile.
+	 */
 	private void resetBoard () 
 	{
-		safeSpaces = 0;
-		for (space[] arr : board)
-			for (space it : arr)
-				it.reset ();
+		safeTiles = 0;
+		for (Tile[] arr : board)
+			for (Tile it : arr)
+				it.reset();
 	}
 	
+	/**
+	 * Counts the surrounding mines to be displayed on the tile label.
+	 */
 	private void countSurrounding () 
 	{
 		for (int Y = 0; Y < board.length; Y++)
@@ -135,10 +157,14 @@ public class MineSweeper extends JFrame implements ActionListener
 					}
 	}
 	
+	/**
+	 * Determines what will happen next based on the outcome and player choice.
+	 * @param endGameStatus Whether the player won or lost.
+	 */
 	public void theEndGame (boolean endGameStatus) 
 	{
-		for (space[] arr : board)
-			for (space it : arr)
+		for (Tile[] arr : board)
+			for (Tile it : arr)
 				if (it.isMine)
 					it.reveal (true);
 		String text = endGameStatus ? "You won! Play again?" : "You lost. Play again?";
@@ -149,21 +175,10 @@ public class MineSweeper extends JFrame implements ActionListener
 			rainbowMode = true;
 		reset ();
 	}
-	
-    public static void main (String... cheese) 
-    {
-    	try 
-    	{
-			UIManager.setLookAndFeel ("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-		} 
-    	catch (Exception any) 
-    	{/*UI not found*/}
-    	EventQueue.invokeLater (() -> 
-    	{
-            new MineSweeper ();
-        });
-    }
     
+	/**
+	 * Determines the outcome of a Tile press.
+	 */
 	@Override
 	public void actionPerformed (ActionEvent evt) 
 	{
@@ -185,8 +200,8 @@ public class MineSweeper extends JFrame implements ActionListener
 			reset();
 			break;
 		case "View Board":
-			for (space[] arr : board)
-				for (space it : arr)
+			for (Tile[] arr : board)
+				for (Tile it : arr)
 					it.reveal (true);
 			theEndGame (false);
 			break;
@@ -201,13 +216,16 @@ public class MineSweeper extends JFrame implements ActionListener
 		}
 	}
 	
-	private class space extends JButton implements ActionListener, MouseListener
+	private class Tile extends JButton implements ActionListener, MouseListener
 	{
 		private byte surroundingMines;
 		private boolean isMine;
 		private boolean hidden = true;
 		
-		space () 
+		/**
+		 * Creates the action listeners and set the initial values.
+		 */
+		Tile () 
 		{
 			super ();
 			addActionListener (this);
@@ -215,6 +233,9 @@ public class MineSweeper extends JFrame implements ActionListener
 			this.reset ();
 		}
 		
+		/**
+		 * resets the tile color and status.
+		 */
 		public void reset () 
 		{	
 			hidden = true;
@@ -225,18 +246,25 @@ public class MineSweeper extends JFrame implements ActionListener
 			else if (d == diffs.easy)
 				isMine = isMine && rng.nextBoolean() && rng.nextBoolean();
 			if (!isMine)
-				safeSpaces++;
+				safeTiles++;
 			surroundingMines = 0;
 			setBackground (Color.white);
 			setText ("");
 		}
 		
+		/**
+		 * Reveals tile.
+		 */
 		@Override
 		public void actionPerformed (ActionEvent arg0) 
 		{
 			reveal(false);
 		}
 		
+		/**
+		 * determines the outcome of tile press.
+		 * @param atEndGame determines whether the tile will be revealed with / without ending the game.
+		 */
 		public void reveal (boolean atEndGame) 
 		{
 			if (isMine && hidden) 
@@ -250,12 +278,15 @@ public class MineSweeper extends JFrame implements ActionListener
 				hidden = false;
 				setBackground(new Color(192+63*((surroundingMines-4)/4), 255-(31*surroundingMines)-surroundingMines+surroundingMines/8, 32+32*((surroundingMines-4)/4), 255));
 				setText (surroundingMines+"");
-				safeSpaces--;
-				if (safeSpaces == 0 && !atEndGame)
+				safeTiles--;
+				if (safeTiles == 0 && !atEndGame)
 					theEndGame (true);
 			}
 		}
 
+		/**
+		 * processes mouse event.
+		 */
 		@Override
 		public void mouseClicked(MouseEvent arg0) 
 		{
@@ -269,6 +300,9 @@ public class MineSweeper extends JFrame implements ActionListener
 			}
 		}
 
+		/**
+		 * processes enter over for aesthetics.
+		 */
 		@Override
 		public void mouseEntered(MouseEvent arg0) 
 		{
@@ -276,6 +310,9 @@ public class MineSweeper extends JFrame implements ActionListener
 				setBackground(Color.gray);
 		}
 
+		/**
+		 * processes exit over for aesthetics.
+		 */
 		@Override
 		public void mouseExited(MouseEvent arg0) 
 		{
@@ -287,4 +324,4 @@ public class MineSweeper extends JFrame implements ActionListener
 		@Override public void mousePressed  (MouseEvent arg0) { }
 		@Override public void mouseReleased (MouseEvent arg0) { }
 	}
-}
+}	
